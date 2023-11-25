@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Khula:300,600" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
+
+
+    <title>Document</title>
+</head>
+<body>
+    <p>Schengen calculator</p>
+
+    
+
+    
+    <div class="graphic">
+
+    </div>
+
+
+
+    <div class="slidecontainer">
+        <!-- <input type="range" min="1" max="100" value="50" class="slider" id="myRange"> -->
+        <label id="min" for="myRange"></label>
+        <input type="range" class="slider" id="myRange">
+        <label id="max"></label>
+        <p><span id="demo"></span></p>
+    </div>
+
+    <div>
+        <p>
+            <label>Today: </label>
+            <label id="todayLabel"></label>
+        </p>
+        <p>
+            <label>Start Period: </label>
+            <label id="startDateLabel"></label>
+        </p>
+        <p>
+            <label>End Period: </label>
+            <label id="endDateLabel"></label>
+        </p>
+        <p>
+            <label>Total Period: </label>
+            <label id="totalPeriodLabel"></label>
+        </p>
+        <p>
+            <label>Count: </label>
+            <label id="countLabel"></label>
+        </p>
+    </div>
+
+    
+
+    <div>
+        <label for="startStay">Start date:</label>
+        <input type="date" id="startStay" name="trip-start" />
+
+        <label for="endStay">End date:</label>
+        <input type="date" id="endStay" name="trip-end" />
+    </div>
+
+    <div id="stays-container"></div>
+
+    <button type="button" onclick="addStay()">Add stay</button>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script> -->
+    <script src="scripts.js"></script>
+    <!-- <script src="utils.js"></script> -->
+</body>
+</html>
+
+
+    <!-- <figure>
+        <div class="graphic">
+            <div class="row">
+                <h6>Bar One</h6>
+                <div class="chart">
+                    <span class="block" title="Category A">
+                        <span class="value">57</span>
+                    </span>
+                    <span class="block" title="Category B">
+                        <span class="value">5</span>
+                    </span>
+                    <span class="block" title="Category C">
+                        <span class="value">400</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div> -->
