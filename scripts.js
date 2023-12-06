@@ -78,10 +78,15 @@ slider.oninput = function () {
     termDays[0].pattern.date_range = [formatDate(startDate), formatDate(endDate)]
 }
 
+// Event listener for desktop
 slider.onclick = function () {
     makeShortTermDays(initChart);
 }
 
+// Event listener for mobile
+slider.ontouchend = function () {
+    makeShortTermDays(initChart)
+}
 
 function updateStays() {
     var startStays = document.getElementsByClassName("startStay")
