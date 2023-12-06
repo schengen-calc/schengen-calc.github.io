@@ -184,37 +184,75 @@ var chartConfig = {
     }
 }
 
+var chartConfig2 = {
+    debug: true,
+    type: 'calendar year solid',
+    calendar_range: ['2024-01-01', '2024-12-31'],
+    annotations: [
+        {
+            label_text: '<b>Vacation Days 2024</b>',
+            position: 'top'
+        }
+    ],
+    yAxis_label: {
+        text: '2024',
+        style_fontSize: 25
+    },
+    defaultSeries: {
+        shape_innerPadding: 0,
+        legendEntry_visible: false,
+        defaultPoint: {
+            fill: '#aaa',
+            outline_color: '#fff',
+            outline_width: 2,
+            opacity: 0.5,
+        }
+    }
+}
 
-// Initialize the chart 
-var chart;
-makeShortTermDays(initChart);
+
+// Initialize the charts
+var chart
+var chart2
+
+makeShortTermDays(initChart)
 
 
 function initChart(holidayPoints) {
     chartConfig.series = [
         { points: holidayPoints }
-    ];
+    ]
     chart = JSC.chart(
         'chartDiv',
         chartConfig,
         function (c) {
-            showAll(stays, c);
+            showAll(stays, c)
         }
-    );
+    )
+    chartConfig2.series = [
+        { points: holidayPoints }
+    ]
+    chart2 = JSC.chart(
+        'chartDiv2',
+        chartConfig2,
+        function (c) {
+            showAll(stays, c)
+        }
+    )
 }
 
 function showAll(stays, chartRef) {
     for (i in stays) {
-        showDays(i, chartRef);
+        showDays(i, chartRef)
     }
 }
 
 
 function showDays(i, chartRef) {
     var id = 'id-' + i,
-        config = stays[i];
-    var c = chartRef || chart;
-    var highlight = c.highlights(id);
+        config = stays[i]
+    var c = chartRef || chart
+    var highlight = c.highlights(id)
     config.id = id;
     config.outline = {
         dashStyle: 'solid',
