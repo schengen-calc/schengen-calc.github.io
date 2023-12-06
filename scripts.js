@@ -3,8 +3,9 @@
 var slider = document.getElementById("myRange")
 var minDate = document.getElementById("min")
 var maxDate = document.getElementById("max")
-var startStay = document.getElementById("startStay")
-var endStay = document.getElementById("endStay")
+
+var startStay = document.getElementsByClassName("startStay")
+var endStay = document.getElementsByClassName("endStay")
 
 var todayDate = document.getElementById("todayLabel")
 var start = document.getElementById("startDateLabel")
@@ -19,18 +20,38 @@ Date.prototype.addDays = function (days) {
 }
 
 
+// Get a default chart palette 
+const chartPalette = JSC.getPalette();
 
 const today = new Date()
 
-slider.value = today.valueOf()
+// Initial termDays
+var termDays = [
+    {
+        name: 'Short-stay term',
+        pattern: {
+            date_range: [
+                formatDate(today),
+                formatDate(today.addDays(180)),
+            ]
+        }
+    }
+]
+
+
+var touristDays = 0
+
+
 slider.min = new Date(today).setUTCDate(today.getUTCDate() - 250)
 slider.max = new Date(today).setUTCDate(today.getUTCDate() + 150)
 slider.step = 1000 * 3600 * 24
+
 window.onload = function () {
-    startStay.min = formatDate(new Date(today).setUTCDate(today.getUTCDate() - 250))
-    startStay.max = formatDate(new Date(today).setUTCDate(today.getUTCDate() + 150))
-    endStay.min = formatDate(new Date(today).setUTCDate(today.getUTCDate() - 250))
-    endStay.max = formatDate(new Date(today).setUTCDate(today.getUTCDate() + 150))
+    slider.value = today.valueOf()
+    startStay[0].min = formatDate(new Date(today).setUTCDate(today.getUTCDate() - 250))
+    startStay[0].max = formatDate(new Date(today).setUTCDate(today.getUTCDate() + 150))
+    endStay[0].min = formatDate(new Date(today).setUTCDate(today.getUTCDate() - 250))
+    endStay[0].max = formatDate(new Date(today).setUTCDate(today.getUTCDate() + 150))
 
 }
 
@@ -39,6 +60,9 @@ minDate.innerHTML = formatDate(slider.min)
 maxDate.innerHTML = formatDate(slider.max)
 
 var startDate = new Date(parseInt(slider.value))
+var stays = []
+var staysDays = listDays(stays)
+
 
 start.innerHTML = formatDate(startDate)
 end.innerHTML = formatDate(startDate.addDays(180))
@@ -46,38 +70,49 @@ end.innerHTML = formatDate(startDate.addDays(180))
 slider.oninput = function () {
     var startDate = new Date(parseInt(this.value))
     var endDate = startDate.addDays(180)
+    touristDays = countDaysInRange(staysDays, startDate, endDate)
     start.innerHTML = formatDate(startDate)
     end.innerHTML = formatDate(endDate)
     totalPeriod.innerHTML = (endDate - startDate) / (1000 * 3600 * 24)
-    daysCount.innerHTML = countDays(listDays(stays), startDate, endDate)
+    daysCount.innerHTML = touristDays
+    termDays[0].pattern.date_range = [formatDate(startDate), formatDate(endDate)]
 }
 
-var stays = []
+slider.onclick = function () {
+    makeShortTermDays(initChart);
+}
+
 
 function updateStays() {
     var startStays = document.getElementsByClassName("startStay")
     var endStays = document.getElementsByClassName("endStay")
-    console.log(stays)
-    stays.length = 0
-    console.log(stays)
+    stays = []
+
     for (i in startStays) {
-        console.log(i)
         stays.push(
             {
-                start: startStays[i].value,
-                end: endStays[i].value
+                opacity: 1,
+                visible: true,
+                pattern: {
+                    date_range: [
+                        startStays[i].value,
+                        endStays[i].value
+                    ]
+                }
             }
         )
     }
-    console.log(stays)
-    //stays = stays_
+    for (i in stays) {
+        stays[i].color = chartPalette[i]
+    }
+
+    staysDays = listDays(stays)
+
+    makeShortTermDays(initChart)
 }
 
 
-
-
-
-function addStay() {
+function addStayComponent() {
 
     let stay = document.createElement("div")
     let startLabel = document.createElement("label")
@@ -88,7 +123,7 @@ function addStay() {
     startDateElement.classList.add("startStay")
 
     let endLabel = document.createElement("label")
-    endLabel.textContent = "End date: "
+    endLabel.textContent = " End date: "
     let endDateElement = document.createElement("input")
     endDateElement.type = "date"
     endDateElement.setAttribute("onchange", "updateStays()")
@@ -118,117 +153,107 @@ function addStay() {
 
 
 
-
-
-var myConfig = {
-    type: 'calendar',
-    options: {
-        year: {
-            text: '2023',
-            visible: true
-        },
-        startMonth: 1,
-        endMonth: 12,
-        palette: ['none', '#2196F3'],
-        month: {
-            item: {
-                fontColor: 'gray',
-                fontSize: 9
-            }
-        },
-        weekday: {
-            values: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-            item: {
-                fontColor: 'gray',
-                fontSize: 9
-            }
-        },
-        values: [
-            ['2023-01-01', 3],
-            ['2023-02-04', 12],
-            ['2023-03-05', 3],
-            ['2023-04-06', 4],
-            ['2023-05-07', 9],
-            ['2023-06-08', 11],
-            ['2023-07-11', 5],
-            ['2023-08-12', 5],
-            ['2023-09-13', 9],
-            ['2023-10-14', 9],
-        ]
+var chartConfig = {
+    debug: true,
+    type: 'calendar year solid',
+    calendar_range: ['2023-01-01', '2023-12-31'],
+    annotations: [
+        {
+            label_text: '<b>Vacation Days 2023</b>',
+            position: 'top'
+        }
+    ],
+    yAxis_label: {
+        text: '2023',
+        style_fontSize: 25
     },
-
-    plotarea: {
-        marginTop: '15%',
-        marginBottom: '15%',
-        marginLeft: '8%',
-        marginRight: '2%'
+    defaultSeries: {
+        shape_innerPadding: 0,
+        legendEntry_visible: false,
+        defaultPoint: {
+            fill: '#aaa',
+            outline_color: '#fff',
+            outline_width: 2,
+            opacity: 0.5,
+        }
     }
 }
 
-var myConfig2 = {
-    type: 'calendar',
-    options: {
-        year: {
-            text: '2024',
-            visible: true
-        },
-        startMonth: 1,
-        endMonth: 12,
-        palette: ['none', '#2196F3'],
-        month: {
-            item: {
-                fontColor: 'gray',
-                fontSize: 9
-            }
-        },
-        weekday: {
-            values: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-            item: {
-                fontColor: 'gray',
-                fontSize: 9
-            }
-        },
-        values: [
-            ['2024-01-01', 20],
-            ['2024-02-04', 12],
-            ['2024-03-05', 3],
-            ['2024-04-06', 4],
-            ['2024-05-07', 9],
-            ['2024-06-08', 11],
-            ['2024-07-11', 5],
-            ['2024-08-12', 5],
-            ['2024-09-13', 9],
-            ['2024-10-14', 9],
 
-        ]
-    },
+// Initialize the chart 
+var chart;
+makeShortTermDays(initChart);
 
-    plotarea: {
-        marginTop: '15%',
-        marginBottom: '15%',
-        marginLeft: '8%',
-        marginRight: '2%'
+
+function initChart(holidayPoints) {
+    chartConfig.series = [
+        { points: holidayPoints }
+    ];
+    chart = JSC.chart(
+        'chartDiv',
+        chartConfig,
+        function (c) {
+            showAll(stays, c);
+        }
+    );
+}
+
+function showAll(stays, chartRef) {
+    for (i in stays) {
+        showDays(i, chartRef);
     }
 }
 
-zingchart.loadModules('calendar', function () {
-    zingchart.render(
-        {
-            id: 'myChart',
-            data: myConfig,
-            height: 200,
-            width: '100%'
+
+function showDays(i, chartRef) {
+    var id = 'id-' + i,
+        config = stays[i];
+    var c = chartRef || chart;
+    var highlight = c.highlights(id);
+    config.id = id;
+    config.outline = {
+        dashStyle: 'solid',
+        color: '#000',
+        width: 2
+    };
+    // config.tooltip = '<b>%name</b> ' + config.name
+
+    if (!highlight) {
+        c.highlights.add(config);
+    }
+    // Restore legend entry color 
+    // c.legends(0)
+    //     .entries('lid-' + i)
+    //     .options({ color: 'red' });
+}
+
+
+function makeShortTermDays(callback) {
+
+    var holidayPoints = termDays.map(function (
+        item
+    ) {
+        if (touristDays > 90) {
+            fillColor = 'red'
+        } else {
+            fillColor = 'green'
         }
-    )
-    zingchart.render(
-        {
-            id: 'myChart2',
-            data: myConfig2,
-            height: 200,
-            width: '100%'
+        
+        return {
+            date: item.pattern,
+            fill: fillColor,
+            opacity: 0.2,
+            outline: {
+                dashStyle: 'solid',
+                color: fillColor,
+                width: 2,
+            },
+            tooltip: '<b>%name</b> ' // + item.name
         }
-    )
-})
+    });
+    callback(holidayPoints);
+}
+
 
 
 
@@ -238,35 +263,48 @@ zingchart.loadModules('calendar', function () {
  */
 
 
+/**
+ * 
+ * @param {*} stays 
+ * @returns 
+ */
 function listDays(stays) {
     var dateArray = []
     for (i in stays) {
-        // console.log(stays[i].start)
-        dateArray = dateArray.concat(dateRange(stays[i].start, stays[i].end))
+        if (stays[i].pattern.date_range[0] && stays[i].pattern.date_range[1]) {
+            dateArray = dateArray.concat(
+                dateRange(stays[i].pattern.date_range[0], stays[i].pattern.date_range[1])
+            )
+        }
     }
-    return dateArray
+    return [...new Set(dateArray)]
 }
 
 
 function dateRange(startDate, endDate, steps = 1) {
     const dateArray = []
     let currentDate = new Date(startDate)
-
     while (currentDate <= new Date(endDate)) {
-        dateArray.push(new Date(currentDate))
+        dateArray.push(formatDate(new Date(currentDate)))
         // Use UTC date to prevent problems with time zones and DST
         currentDate.setUTCDate(currentDate.getUTCDate() + steps)
     }
     return dateArray
 }
 
-
-function countDays(listDays, range1, range2) {
+/**
+ * 
+ * @param {*} dateList 
+ * @param {*} startDate 
+ * @param {*} endDate 
+ * @returns 
+ */
+function countDaysInRange(dateList, startDate, endDate) {
     var count = 0
-    listDays.forEach(
-        function (range) {
-            if (new Date(range1) <= range && range <= new Date(range2)) {
-                // console.log(range)
+    dateList.forEach(
+        function (date) {
+            var dateObject = new Date(date)       
+            if (new Date(startDate) <= dateObject && dateObject <= new Date(endDate)) {
                 count++
             }
         }

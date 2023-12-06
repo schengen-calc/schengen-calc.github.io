@@ -10,14 +10,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+    <script src="https://code.jscharting.com/latest/jscharting.js"></script>
+    
 </head>
 <body>
     <p>Schengen calculator</p>
 
     
-    
-    <div id='myChart'></div>
-    <div id='myChart2'></div>
+    <!-- <div id='myChart'></div>
+    <div id='myChart2'></div> -->
+    <div id="chartDiv"></div>
 
 
     <div class="slidecontainer">
@@ -53,17 +55,17 @@
 
     
 
-    <div>
-        <label for="startStay">Start date:</label>
-        <input type="date" id="startStay" name="trip-start" />
+    <div id="stays-container">
+        <div>
+            <label>Start date: </label>
+            <input type="date" onchange="updateStays()" class="startStay" />
 
-        <label for="endStay">End date:</label>
-        <input type="date" id="endStay" name="trip-end" />
+            <label>End date: </label>
+            <input type="date" onchange="updateStays()" class="endStay" />
+        </div>
     </div>
 
-    <div id="stays-container"></div>
-
-    <button type="button" onclick="addStay()">Add stay</button>
+    <button type="button" onclick="addStayComponent()">Add stay</button>
 
     <script src="scripts.js"></script>
 
