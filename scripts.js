@@ -24,6 +24,18 @@ Date.prototype.addDays = function (days) {
 const chartPalette = JSC.getPalette();
 
 const today = new Date()
+var currentYear = today.getUTCFullYear()
+const currentMonth = today.getUTCMonth()
+
+if (currentMonth < 6) {
+    currentYear--
+}
+
+const firstYearStart = new Date(currentYear + "-01-01")
+const firstYearEnd = new Date(currentYear + "-12-31")
+const secondYearStart = new Date(currentYear + 1 + "-01-01")
+const secondYearEnd = new Date(currentYear + 1 + "-12-31")
+
 
 // Initial termDays
 var termDays = [
@@ -42,22 +54,22 @@ var termDays = [
 var touristDays = 0
 
 
-slider.min = new Date(today).setUTCDate(today.getUTCDate() - 250)
-slider.max = new Date(today).setUTCDate(today.getUTCDate() + 150)
+slider.min = firstYearStart.valueOf()
+slider.max = new Date(secondYearEnd).setUTCDate(secondYearEnd.getUTCDate() - 180)
 slider.step = 1000 * 3600 * 24
 
 window.onload = function () {
     slider.value = today.valueOf()
-    startStay[0].min = formatDate(new Date(today).setUTCDate(today.getUTCDate() - 250))
-    startStay[0].max = formatDate(new Date(today).setUTCDate(today.getUTCDate() + 150))
-    endStay[0].min = formatDate(new Date(today).setUTCDate(today.getUTCDate() - 250))
-    endStay[0].max = formatDate(new Date(today).setUTCDate(today.getUTCDate() + 150))
+    startStay[0].min = formatDate(firstYearStart)
+    startStay[0].max = formatDate(secondYearEnd)
+    endStay[0].min = formatDate(firstYearStart)
+    endStay[0].max = formatDate(secondYearEnd)
 
 }
 
 todayDate.innerHTML = formatDate(today)
-minDate.innerHTML = formatDate(slider.min)
-maxDate.innerHTML = formatDate(slider.max)
+minDate.innerHTML = formatDate(firstYearStart.valueOf())
+maxDate.innerHTML = formatDate(secondYearEnd.valueOf())
 
 var startDate = new Date(parseInt(slider.value))
 var stays = []
@@ -141,10 +153,10 @@ function addStayComponent() {
         updateStays()
     })
 
-    startDateElement.min = formatDate(new Date(today).setUTCDate(today.getUTCDate() - 250))
-    startDateElement.max = formatDate(new Date(today).setUTCDate(today.getUTCDate() + 150))
-    endDateElement.min = formatDate(new Date(today).setUTCDate(today.getUTCDate() - 250))
-    endDateElement.max = formatDate(new Date(today).setUTCDate(today.getUTCDate() + 150))
+    startDateElement.min = formatDate(firstYearStart)
+    startDateElement.max = formatDate(secondYearEnd)
+    endDateElement.min = formatDate(firstYearStart)
+    endDateElement.max = formatDate(secondYearEnd)
 
     stay.appendChild(startLabel)
     stay.appendChild(startDateElement)
